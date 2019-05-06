@@ -9,7 +9,7 @@ var addButton = document.getElementById("add");//first button
 var hostHolder = document.getElementById("host-list");//ul of #incomplete-hosts
 var inputError = document.getElementById("input-error");//ul of #incomplete-hosts
 var saveButton = document.getElementById("save");//first button
-var savedHosts;
+var savedHosts = [];
 
 //New host list item
 var createNewHostElement = function(hostString){
