@@ -1,7 +1,7 @@
 {
-  "name": "Getting Started Example",
+  "name": "Que issue?",
   "version": "1.0",
-  "description": "Build an Extension!",
+  "description": "Copia a descrição de uma issue do Jira para o clipboard",
   "permissions": ["activeTab", "declarativeContent", "storage"],
   "options_page": "options.html",
   "background": {
@@ -11,17 +11,17 @@
   "page_action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "images/get_started16.png",
-      "32": "images/get_started32.png",
-      "48": "images/get_started48.png",
-      "128": "images/get_started128.png"
+      "16": "images/otter16.png",
+      "32": "images/otter32.png",
+      "48": "images/otter48.png",
+      "128": "images/otter128.png"
     }
   },
   "icons": {
-    "16": "images/get_started16.png",
-    "32": "images/get_started32.png",
-    "48": "images/get_started48.png",
-    "128": "images/get_started128.png"
+    "16": "images/otter16.png",
+    "32": "images/otter32.png",
+    "48": "images/otter48.png",
+    "128": "images/otter128.png"
   },
   "manifest_version": 2
 }

@@ -29,7 +29,7 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       if(response.status == 200){
         return response.text();
       }else{
-        alert.innerHTML = "Falha ao obter issue :(";
+        alert.innerHTML = "Falha ao obter descrição :(";
         return null;
       }
     })
@@ -45,6 +45,6 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       }
     })
     .catch(function(err) {  
-      alert.innerHTML = "Falha ao obter issue :(";
+      alert.innerHTML = "Falha ao obter descrição :(";
     });
 });
