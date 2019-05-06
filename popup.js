@@ -37,7 +37,8 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       if(html){
         var parser = new DOMParser();
         var doc = parser.parseFromString(html, "text/html");
-        issueDesc.value = doc.querySelector('title').text.split(' - ')[0];
+        var title = doc.querySelector('title').text;
+        issueDesc.value = title.substring(0, title.lastIndexOf(" - ") + 1).trim();
         //seleciona e copia para o clipboard
         issueDesc.select();
         document.execCommand("copy");
