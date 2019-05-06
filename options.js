@@ -18,10 +18,6 @@ var createNewHostElement = function(hostString){
 
 	//label
 	var label = document.createElement("label");//label
-	//input (text)
-	//var editInput = document.createElement("input");//text
-	//button.edit
-	//var editButton = document.createElement("button");//edit button
 
 	//button.delete
 	var deleteButton = document.createElement("button");//delete button
@@ -29,25 +25,17 @@ var createNewHostElement = function(hostString){
 	label.innerText = hostString;
 
 	//Each elements, needs appending
-	//editInput.type = "text";
-
-	//editButton.innerText = "Edit";//innerText encodes special characters, HTML does not.
-	//editButton.className = "edit";
 	deleteButton.innerText = "Delete";
 	deleteButton.className = "delete";
   deleteButton.setAttribute("style", "float: right")
 
 	//and appending.
 	listItem.appendChild(label);
-	//listItem.appendChild(editInput);
-	//listItem.appendChild(editButton);
 	listItem.appendChild(deleteButton);
 	return listItem;
 }
 
 var addHost = function(){
-	console.log("Add Host...");
-
   if(hostInput.value == ""){
     inputError.setAttribute("style", "visibility: unset")
   }else{
@@ -60,7 +48,6 @@ var addHost = function(){
 
       savedHosts.push(hostInput.value);
       hostInput.value = ""
-      console.log(savedHosts);
     }else{
       inputError.setAttribute("style", "visibility: unset")
     }
@@ -68,9 +55,6 @@ var addHost = function(){
 }
 
 var editHost = function(){
-  console.log("Edit Host...");
-  console.log("Change 'edit' to 'save'");
-
   var listItem = this.parentNode;
 
   var editInput = listItem.querySelector('input[type = text]');
@@ -92,8 +76,6 @@ var editHost = function(){
 
 //Delete host.
 var deleteHost = function(){
-		console.log("Delete Host...");
-
 		var listItem = this.parentNode;
 		var ul = listItem.parentNode;
 
@@ -106,7 +88,6 @@ var deleteHost = function(){
 
 //Delete host.
 var applyConfigs = function(){
-		console.log("Saving configs...");
     chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
       chrome.storage.sync.set({hosts: savedHosts}, function() {
         for (var i = 0; i < savedHosts.length; i++){
@@ -129,7 +110,6 @@ addButton.onclick = addHost;
 saveButton.onclick = applyConfigs;
 
 var bindHostEvents = function(hostListItem){
-	console.log("bind list item events");
 //select ListItems children
 	//var editButton = hostListItem.querySelector("button.edit");
 	var deleteButton = hostListItem.querySelector("button.delete");
