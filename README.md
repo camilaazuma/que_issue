@@ -7,7 +7,7 @@
     6. depois de instalar, pode desativar o modo desenvolvedor
 
 # Para setar o projeto:
-    https://developer.chrome.com/extensions/getstarted
+    [https://developer.chrome.com/extensions/getstarted](https://developer.chrome.com/extensions/getstarted)
 
-# Documentação
-    https://developer.chrome.com/extensions/devguide
+# Documentação:
+    [https://developer.chrome.com/extensions/devguide](https://developer.chrome.com/extensions/devguide)
