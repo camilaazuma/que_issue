@@ -6,8 +6,10 @@
 
 chrome.runtime.onInstalled.addListener(function() {
   getAndApplyHosts();
+  console.log('que_issue - onInstalled');
 });
 
 chrome.runtime.onStartup.addListener(function() {
   getAndApplyHosts();
+  console.log('que_issue - onStartup');
 });

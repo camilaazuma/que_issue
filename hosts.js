@@ -20,12 +20,12 @@ var reapplyHosts = function(hosts) {
 var getAndApplyHosts = function () {
     chrome.storage.sync.get('hosts', function(data) {
         var hosts;
-        
         if(data.hosts && data.hosts.length){
             hosts = data.hosts;
         } else {
             hosts = ['makrogroup.atlassian.net'];
         }
+        console.log(hosts);
         reapplyHosts(hosts);
 
       });
