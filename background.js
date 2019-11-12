@@ -5,6 +5,9 @@
 'use strict';
 
 chrome.runtime.onInstalled.addListener(function() {
-  var hosts = ['makrogroup.atlassian.net'];
-  reapplyHosts(hosts);
+  getAndApplyHosts();
+});
+
+chrome.runtime.onStartup.addListener(function() {
+  getAndApplyHosts();
 });
