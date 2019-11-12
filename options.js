@@ -120,11 +120,9 @@ var bindHostEvents = function(hostListItem){
 			deleteButton.onclick = deleteHost;
 }
 
-//cycle over hostHolder ul list items
-	//for each list item
+var readHostsAndFillElements = function() {
   chrome.storage.sync.get('hosts', function(data) {
-    if(data.hosts){
-      if(data.hosts.length){
+    if(data.hosts && data.hosts.length){
         savedHosts = data.hosts;
         for (var i = 0; i<data.hosts.length;i++){
           var listItem = createNewHostElement(data.hosts[i])
@@ -132,5 +130,7 @@ var bindHostEvents = function(hostListItem){
         	bindHostEvents(listItem);
       	}
       }
-    }
   });
+};
+
+readHostsAndFillElements();
