@@ -86,28 +86,16 @@ var deleteHost = function(){
     savedHosts = savedHosts.filter(item => item !== text);
 }
 
-//Delete host.
-var applyConfigs = function(){
-    chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
-      chrome.storage.sync.set({hosts: savedHosts}, function() {
-        for (var i = 0; i < savedHosts.length; i++){
-          chrome.declarativeContent.onPageChanged.addRules([{
-            conditions: [new chrome.declarativeContent.PageStateMatcher({
-              pageUrl: {hostEquals: savedHosts[i]},
-            })],
-            actions: [new chrome.declarativeContent.ShowPageAction()]
-          }]);
-        }
-      });
-    });
-
+//Save and reapply hosts.
+var saveHosts = function(){
+  saveHostsAndReapply(savedHosts);
 }
 
 //The glue to hold it all together.
 
 //Set the click handler to the addHost function.
 addButton.onclick = addHost;
-saveButton.onclick = applyConfigs;
+saveButton.onclick = saveHosts;
 
 var bindHostEvents = function(hostListItem){
 //select ListItems children
@@ -120,17 +108,17 @@ var bindHostEvents = function(hostListItem){
 			deleteButton.onclick = deleteHost;
 }
 
-//cycle over hostHolder ul list items
-	//for each list item
+var readHostsAndFillElements = function() {
   chrome.storage.sync.get('hosts', function(data) {
-    if(data.hosts){
-      if(data.hosts.length){
-        savedHosts = data.hosts;
-        for (var i = 0; i<data.hosts.length;i++){
-          var listItem = createNewHostElement(data.hosts[i])
-        	hostHolder.appendChild(listItem);
-        	bindHostEvents(listItem);
-      	}
+    if(data.hosts && data.hosts.length){
+      savedHosts = data.hosts;
+      for (var i = 0; i<data.hosts.length;i++){
+        var listItem = createNewHostElement(data.hosts[i])
+        hostHolder.appendChild(listItem);
+        bindHostEvents(listItem);
       }
     }
   });
+};
+
+readHostsAndFillElements();
