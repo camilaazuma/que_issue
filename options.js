@@ -7,7 +7,9 @@
 var hostInput = document.getElementById("new-host");//Add a new host.
 var addButton = document.getElementById("add");//first button
 var hostHolder = document.getElementById("host-list");//ul of #incomplete-hosts
-var inputError = document.getElementById("input-error");//ul of #incomplete-hosts
+var inputEmptyError = document.getElementById("input-error");//ul of #incomplete-hosts
+var inputDuplicateError = document.getElementById("input-error-duplicate");//ul of #incomplete-hosts
+
 var saveButton = document.getElementById("save");//first button
 var savedHosts = [];
 
@@ -36,21 +38,40 @@ var createNewHostElement = function(hostString){
 }
 
 var addHost = function(){
-  if(hostInput.value == ""){
-    inputError.setAttribute("style", "visibility: unset")
-  }else{
-    inputError.setAttribute("style", "visibility: hidden")
+  clearErrors();
+  if(hasErrors()) return;
 
-    if(savedHosts.includes(hostInput.value) == false){
-      var listItem = createNewHostElement(hostInput.value);
-    	hostHolder.appendChild(listItem);
-    	bindHostEvents(listItem);
+  var listItem = createNewHostElement(hostInput.value);
+  hostHolder.appendChild(listItem);
+  bindHostEvents(listItem);
 
-      savedHosts.push(hostInput.value);
-      hostInput.value = ""
-    }else{
-      inputError.setAttribute("style", "visibility: unset")
-    }
+  savedHosts.push(hostInput.value);
+  hostInput.value = "";
+}
+
+var hasErrors = function() {
+  if (hostInput.value == ""){
+    setError(inputEmptyError);
+    return true;
+  } 
+
+  var alreadySaved = savedHosts.includes(hostInput.value);
+  if(alreadySaved) {
+    setError(inputDuplicateError);
+    return true;
+  }
+
+  return false;
+}
+
+var clearErrors = function() {
+  inputEmptyError.setAttribute("style", "display: none");
+  inputDuplicateError.setAttribute("style", "display: none");
+}
+
+var setError = function(inputVariable) {
+  if(inputVariable) {
+    inputVariable.setAttribute("style", "display: block");
   }
 }
 

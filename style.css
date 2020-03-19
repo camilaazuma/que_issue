@@ -80,9 +80,9 @@ input[type="text"] {
 input[type="text"]:focus {
   color: #333;
 }
-#input-error{
+.error{
   color: red;
-  visibility: hidden;
+  display:none;
 }
 
 
