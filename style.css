@@ -82,16 +82,20 @@ input[type="text"]:focus {
 }
 .error{
   color: red;
-  display:none;
+  display: none;
+}
+
+.hide{
+  display: none;
 }
 
 
 /* New Task */
-label[for='new-host'] {
+label.title-label {
   display: block;
   margin: 0 0 20px;
 }
-input#new-host {
+input {
   float: left;
   width: 318px;
 }
@@ -123,6 +127,14 @@ li > .delete:hover {
   color: #CF2323;
 }
 
+.title-span {
+  font-weight: bold;
+  font-size: 14;
+}
+
+#trello-show-config {
+  margin-top: 30px;
+}
 
 /* Edit Task */
 ul li input[type=text] {

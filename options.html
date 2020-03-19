@@ -7,15 +7,28 @@
   <body>
     <div class="container">
       <p>
-        <label for="new-host">Adicione um novo domínio para utilizar a extensão</label><input id="new-host" type="text"><button id="add">Add</button>
+        <label for="new-host" class="title-label">Adicione um novo domínio para utilizar a extensão</label>
+        <input id="new-host" type="text"><button id="add">Add</button>
         <br />
         <span id="input-error" class="error">* Verifique o preenchimento do campo</span>
         <span id="input-error-duplicate" class="error">* Este domínio já está salvo nas suas configurações</span>
       </p>
 
+      <p id="trello-issue-config" class="hide">
+        <label for="trello-issue" class="title-label">Configure o código da issue para boards Trello. Ex: Para obter [ABC-1], insira "ABC"</label>
+        <input id="trello-issue" type="text"><button id="trello-issue-save">Salvar</button>
+      </p>
+
       <h3>Domínios</h3>
       <ul id="host-list">
       </ul>
+
+      <div id="trello-show-config" class="hide">
+        <span class="title-span">Código configurado (Trello):</span>
+        <span id="trello-current-config"></span>
+        <button id="trello-delete">Apagar</button>
+      </div>
+
       <button id="save">Save</button>
 
     </div>

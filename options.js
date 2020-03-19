@@ -10,6 +10,14 @@ var hostHolder = document.getElementById("host-list");//ul of #incomplete-hosts
 var inputEmptyError = document.getElementById("input-error");//ul of #incomplete-hosts
 var inputDuplicateError = document.getElementById("input-error-duplicate");//ul of #incomplete-hosts
 
+// Trello
+var trelloIssueConfig = document.getElementById("trello-issue-config"); // exibição de configuração do trello
+var trelloIssue = document.getElementById("trello-issue");
+var trelloIssueSaveButton = document.getElementById("trello-issue-save");
+var trelloShowConfig = document.getElementById("trello-show-config");
+var trelloCurrentConfig = document.getElementById("trello-current-config");
+var trelloDeleteConfigButton = document.getElementById("trello-delete");
+
 var saveButton = document.getElementById("save");//first button
 var savedHosts = [];
 
@@ -46,7 +54,19 @@ var addHost = function(){
   bindHostEvents(listItem);
 
   savedHosts.push(hostInput.value);
+  if(isTrelloBoard(hostInput.value)) {
+    showElement(trelloIssueConfig);
+  }
+
   hostInput.value = "";
+}
+
+var showElement = function(element) {
+  element.setAttribute("style", "display: block");
+}
+
+var hideElement = function(element) {
+  element.setAttribute("style", "display: none");
 }
 
 var hasErrors = function() {
@@ -65,15 +85,45 @@ var hasErrors = function() {
 }
 
 var clearErrors = function() {
-  inputEmptyError.setAttribute("style", "display: none");
-  inputDuplicateError.setAttribute("style", "display: none");
+  hideElement(inputEmptyError);
+  hideElement(inputDuplicateError);
 }
 
 var setError = function(inputVariable) {
   if(inputVariable) {
-    inputVariable.setAttribute("style", "display: block");
+    showElement(inputVariable);
   }
 }
+
+/* ---- Trello ----*/
+
+var isTrelloBoard = function(host) {
+  return host.includes("trello");
+}
+
+var saveTrelloConfiguration = function() {
+  if(trelloIssue && trelloIssue.value) {
+    var config = trelloIssue.value;
+    chrome.storage.sync.set({trelloConfig: config}, function() {
+      hideElement(trelloIssueConfig);
+      trelloIssue.value = '';
+      showCurrentTrelloConfiguration(config);
+    });
+  }
+}
+
+function showCurrentTrelloConfiguration(config) {
+  showElement(trelloShowConfig);
+  trelloCurrentConfig.innerText = config;
+}
+
+function deleteTrelloConfiguration() {
+  chrome.storage.sync.remove("trelloConfig", function(item) {
+    hideElement(trelloShowConfig);
+  });
+}
+
+/* ---- Fim trello ----*/
 
 var editHost = function(){
   var listItem = this.parentNode;
@@ -117,6 +167,8 @@ var saveHosts = function(){
 //Set the click handler to the addHost function.
 addButton.onclick = addHost;
 saveButton.onclick = saveHosts;
+trelloIssueSaveButton.onclick = saveTrelloConfiguration;
+trelloDeleteConfigButton.onclick = deleteTrelloConfiguration;
 
 var bindHostEvents = function(hostListItem){
 //select ListItems children
@@ -142,4 +194,14 @@ var readHostsAndFillElements = function() {
   });
 };
 
+var showTrelloIfConfigured = function() {
+  chrome.storage.sync.get('trelloConfig', function(data) {
+    var issuePattern = data.trelloConfig;
+    if(issuePattern) {
+      showCurrentTrelloConfiguration(issuePattern);
+    }
+  });
+}
+
 readHostsAndFillElements();
+showTrelloIfConfigured();
