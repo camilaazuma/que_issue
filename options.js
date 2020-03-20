@@ -17,6 +17,7 @@ var trelloIssueSaveButton = document.getElementById("trello-issue-save");
 var trelloShowConfig = document.getElementById("trello-show-config");
 var trelloCurrentConfig = document.getElementById("trello-current-config");
 var trelloDeleteConfigButton = document.getElementById("trello-delete");
+var inputWrongTrelloFormat = document.getElementById("input-wrong-trello-format");
 
 var saveButton = document.getElementById("save");//first button
 var savedHosts = [];
@@ -81,12 +82,18 @@ var hasErrors = function() {
     return true;
   }
 
+  if(isTrelloBoard(hostInput.value) && !isTrelloFormat(hostInput.value)) {
+    setError(inputWrongTrelloFormat);
+    return true;
+  }
+
   return false;
 }
 
 var clearErrors = function() {
   hideElement(inputEmptyError);
   hideElement(inputDuplicateError);
+  hideElement(inputWrongTrelloFormat);
 }
 
 var setError = function(inputVariable) {
@@ -99,6 +106,11 @@ var setError = function(inputVariable) {
 
 var isTrelloBoard = function(host) {
   return host.includes("trello");
+}
+
+var isTrelloFormat = function(host) {
+  var trelloFormat = /^trello(.com){0,1}$/;
+  return trelloFormat.test(host);
 }
 
 var saveTrelloConfiguration = function() {
