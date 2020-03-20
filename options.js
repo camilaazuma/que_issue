@@ -9,6 +9,8 @@ var addButton = document.getElementById("add");//first button
 var hostHolder = document.getElementById("host-list");//ul of #incomplete-hosts
 var inputEmptyError = document.getElementById("input-error");//ul of #incomplete-hosts
 var inputDuplicateError = document.getElementById("input-error-duplicate");//ul of #incomplete-hosts
+var seeRuleset = document.getElementById("see-ruleset");
+var ruleset = document.getElementById("ruleset");
 
 // Trello
 var trelloIssueConfig = document.getElementById("trello-issue-config"); // exibição de configuração do trello
@@ -137,6 +139,10 @@ function deleteTrelloConfiguration() {
 
 /* ---- Fim trello ----*/
 
+var showRuleset = function() {
+  ruleset.setAttribute("style", "visibility: visible");
+}
+
 var editHost = function(){
   var listItem = this.parentNode;
 
@@ -181,6 +187,7 @@ addButton.onclick = addHost;
 saveButton.onclick = saveHosts;
 trelloIssueSaveButton.onclick = saveTrelloConfiguration;
 trelloDeleteConfigButton.onclick = deleteTrelloConfiguration;
+seeRuleset.onclick = showRuleset;
 
 var bindHostEvents = function(hostListItem){
 //select ListItems children

@@ -5,9 +5,20 @@ body {
   font-family: Lato, sans-serif;
 }
 .container {
-  display: block;
-  width: 400px;
-  margin: 100px auto 0;
+  display: flex;
+  width: 90%;
+  margin: 40px auto 0;
+}
+.container > div {
+  flex: 1; /*grow*/
+  margin: 20px;
+}
+.flex {
+  display: flex;
+  padding: 10px 0;
+}
+.flex button {
+  margin: 0;
 }
 ul {
   margin: 0;
@@ -56,21 +67,48 @@ button#save:hover {
 
 /* Heading */
 h3,
-label[for='new-host'] {
+label[for='new-host'],
+label.title-label {
   color: #333;
   font-weight: 700;
   font-size: 15px;
   border-bottom: 2px solid #333;
   padding: 30px 0 10px;
   margin: 0;
+  flex: 1;
   text-transform: uppercase;
 }
+
+.subtitle {
+  color: #333;
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 18px;
+  padding-top: 10px;
+  margin: 0;
+  text-transform: uppercase;
+}
+.rules {
+  font-size: 14px;
+  line-height: 18px;
+  margin: 10px 0;
+  display: block;
+}
+div.type-rules {
+  padding-bottom: 20px;
+}
+button#see-ruleset {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
 input[type="text"] {
   margin: 0;
   font-size: 18px;
   line-height: 18px;
-  height: 18px;
-  padding: 10px;
+  height: 25px;
+  padding: 15px 10px;
   border: 1px solid #ddd;
   background: #fff;
   border-radius: 6px;
@@ -87,6 +125,10 @@ input[type="text"]:focus {
 
 .hide{
   display: none;
+}
+
+.hidden {
+  visibility: hidden;
 }
 
 
