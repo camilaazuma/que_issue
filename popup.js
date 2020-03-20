@@ -18,6 +18,12 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
   var url = new URL(activeTab.url);
 
   var issue = "";
+  
+  if(isTrello(url)) {
+    setTrelloIssueCode(url);
+    return;
+  }
+
   if(url.searchParams.has("selectedIssue")){
     issue = url.searchParams.get("selectedIssue");
   }else{
@@ -49,3 +55,48 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       alert.innerHTML = "Falha ao obter descrição :(";
     });
 });
+
+var isTrello = function(url) {
+  return url.toString().includes("trello");
+}
+
+var setTrelloIssueCode = function(url) {
+  chrome.storage.sync.get('trelloConfig', function(data) { 
+    var issuePattern = data.trelloConfig;
+    if(!issuePattern) {
+      alert.innerHTML = "Configure o padrão de issue nas configurações da extensão";
+      return;
+    }
+
+    var issueNumberRegex = /(?<=\/)[\d]+(?=-[^\/]+$)/;
+    var issueNumber = url.toString().match(issueNumberRegex);
+    if(issueNumber === null) {
+      alert.innerHTML = "Falha ao obter a descrição :(";
+      return;
+    }
+
+    function getIssueDescriptionDOM() {
+      var list = document.getElementsByClassName("card-detail-title-assist");
+      if(list.length > 0) {
+        return list[0].innerText;
+      }
+      return "";
+    }
+
+    chrome.tabs.executeScript({
+        code: '(' + getIssueDescriptionDOM + ')();' //argument here is a string but function.toString() returns function's code
+    }, (results) => {
+      var issueDescription = results;
+      
+      issueDesc.value = `[${issuePattern}-${issueNumber}] ${issueDescription}`;
+
+      navigator.clipboard.writeText(issueDesc.value).then(function() {
+        alert.innerHTML = "Copiado!";
+      }, function(err) {
+        alert.innerHTML = "Falha ao copiar a descrição :(";
+      });
+    });
+
+    
+  });
+}

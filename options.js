@@ -7,7 +7,20 @@
 var hostInput = document.getElementById("new-host");//Add a new host.
 var addButton = document.getElementById("add");//first button
 var hostHolder = document.getElementById("host-list");//ul of #incomplete-hosts
-var inputError = document.getElementById("input-error");//ul of #incomplete-hosts
+var inputEmptyError = document.getElementById("input-error");//ul of #incomplete-hosts
+var inputDuplicateError = document.getElementById("input-error-duplicate");//ul of #incomplete-hosts
+var seeRuleset = document.getElementById("see-ruleset");
+var ruleset = document.getElementById("ruleset");
+
+// Trello
+var trelloIssueConfig = document.getElementById("trello-issue-config"); // exibição de configuração do trello
+var trelloIssue = document.getElementById("trello-issue");
+var trelloIssueSaveButton = document.getElementById("trello-issue-save");
+var trelloShowConfig = document.getElementById("trello-show-config");
+var trelloCurrentConfig = document.getElementById("trello-current-config");
+var trelloDeleteConfigButton = document.getElementById("trello-delete");
+var inputWrongTrelloFormat = document.getElementById("input-wrong-trello-format");
+
 var saveButton = document.getElementById("save");//first button
 var savedHosts = [];
 
@@ -36,22 +49,98 @@ var createNewHostElement = function(hostString){
 }
 
 var addHost = function(){
-  if(hostInput.value == ""){
-    inputError.setAttribute("style", "visibility: unset")
-  }else{
-    inputError.setAttribute("style", "visibility: hidden")
+  clearErrors();
+  if(hasErrors()) return;
 
-    if(savedHosts.includes(hostInput.value) == false){
-      var listItem = createNewHostElement(hostInput.value);
-    	hostHolder.appendChild(listItem);
-    	bindHostEvents(listItem);
+  var listItem = createNewHostElement(hostInput.value);
+  hostHolder.appendChild(listItem);
+  bindHostEvents(listItem);
 
-      savedHosts.push(hostInput.value);
-      hostInput.value = ""
-    }else{
-      inputError.setAttribute("style", "visibility: unset")
-    }
+  savedHosts.push(hostInput.value);
+  if(isTrelloBoard(hostInput.value)) {
+    showElement(trelloIssueConfig);
   }
+
+  hostInput.value = "";
+}
+
+var showElement = function(element) {
+  element.setAttribute("style", "display: block");
+}
+
+var hideElement = function(element) {
+  element.setAttribute("style", "display: none");
+}
+
+var hasErrors = function() {
+  if (hostInput.value == ""){
+    setError(inputEmptyError);
+    return true;
+  } 
+
+  var alreadySaved = savedHosts.includes(hostInput.value);
+  if(alreadySaved) {
+    setError(inputDuplicateError);
+    return true;
+  }
+
+  if(isTrelloBoard(hostInput.value) && !isTrelloFormat(hostInput.value)) {
+    setError(inputWrongTrelloFormat);
+    return true;
+  }
+
+  return false;
+}
+
+var clearErrors = function() {
+  hideElement(inputEmptyError);
+  hideElement(inputDuplicateError);
+  hideElement(inputWrongTrelloFormat);
+}
+
+var setError = function(inputVariable) {
+  if(inputVariable) {
+    showElement(inputVariable);
+  }
+}
+
+/* ---- Trello ----*/
+
+var isTrelloBoard = function(host) {
+  return host.includes("trello");
+}
+
+var isTrelloFormat = function(host) {
+  var trelloFormat = /^trello.com$/;
+  return trelloFormat.test(host);
+}
+
+var saveTrelloConfiguration = function() {
+  if(trelloIssue && trelloIssue.value) {
+    var config = trelloIssue.value;
+    chrome.storage.sync.set({trelloConfig: config}, function() {
+      hideElement(trelloIssueConfig);
+      trelloIssue.value = '';
+      showCurrentTrelloConfiguration(config);
+    });
+  }
+}
+
+function showCurrentTrelloConfiguration(config) {
+  showElement(trelloShowConfig);
+  trelloCurrentConfig.innerText = config;
+}
+
+function deleteTrelloConfiguration() {
+  chrome.storage.sync.remove("trelloConfig", function(item) {
+    hideElement(trelloShowConfig);
+  });
+}
+
+/* ---- Fim trello ----*/
+
+var showRuleset = function() {
+  ruleset.setAttribute("style", "visibility: visible");
 }
 
 var editHost = function(){
@@ -96,6 +185,9 @@ var saveHosts = function(){
 //Set the click handler to the addHost function.
 addButton.onclick = addHost;
 saveButton.onclick = saveHosts;
+trelloIssueSaveButton.onclick = saveTrelloConfiguration;
+trelloDeleteConfigButton.onclick = deleteTrelloConfiguration;
+seeRuleset.onclick = showRuleset;
 
 var bindHostEvents = function(hostListItem){
 //select ListItems children
@@ -121,4 +213,14 @@ var readHostsAndFillElements = function() {
   });
 };
 
+var showTrelloIfConfigured = function() {
+  chrome.storage.sync.get('trelloConfig', function(data) {
+    var issuePattern = data.trelloConfig;
+    if(issuePattern) {
+      showCurrentTrelloConfiguration(issuePattern);
+    }
+  });
+}
+
 readHostsAndFillElements();
+showTrelloIfConfigured();
