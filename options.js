@@ -111,7 +111,7 @@ var isTrelloBoard = function(host) {
 }
 
 var isTrelloFormat = function(host) {
-  var trelloFormat = /^trello(.com){0,1}$/;
+  var trelloFormat = /^trello.com$/;
   return trelloFormat.test(host);
 }
 
