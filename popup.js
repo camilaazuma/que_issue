@@ -77,7 +77,6 @@ var setTrelloIssueCode = function(url) {
 
     function getIssueDescriptionDOM() {
       var list = document.getElementsByClassName("card-detail-title-assist");
-      console.log(list);
       if(list.length > 0) {
         return list[0].innerText;
       }
