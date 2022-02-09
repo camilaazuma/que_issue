@@ -17,39 +17,13 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
   var activeTab = tabs[0];
   var url = new URL(activeTab.url);
 
-  var issue = "";
   
   if(isTrello(url)) {
     setTrelloIssueCode(url);
     return;
   }
 
-  issue = getJiraIssue(url);
-
-  fetch(url.origin + '/browse/' + issue)
-    .then(function(response) {
-      if(response.status == 200){
-        return response.text();
-      }else{
-        alert.innerHTML = "Falha ao obter descrição :(";
-        return null;
-      }
-    })
-    .then(function(html) {
-      if(html){
-        var parser = new DOMParser();
-        var doc = parser.parseFromString(html, "text/html");
-        var title = doc.querySelector('title').text;
-        issueDesc.value = title.substring(0, title.lastIndexOf(" - ") + 1).trim();
-        //seleciona e copia para o clipboard
-        issueDesc.select();
-        document.execCommand("copy");
-        alert.innerHTML = "Copiado!";
-      }
-    })
-    .catch(function(err) {  
-      alert.innerHTML = "Falha ao obter descrição :(";
-    });
+  setJiraIssueCodeFromHTML(url);
 });
 
 var getJiraIssue = function(url) {
@@ -59,6 +33,36 @@ var getJiraIssue = function(url) {
     return url.pathname.replace("\/browse\/", "");
   }
 }  
+
+//Old way
+var setJiraIssueCodeFromHTML = function(url) {  
+  var issue = getJiraIssue(url);
+
+  fetch(url.origin + '/browse/' + issue)
+  .then(function(response) {
+    if(response.status == 200){
+      return response.text();
+    }else{
+      alert.innerHTML = "Falha ao obter descrição :(";
+      return null;
+    }
+  })
+  .then(function(html) {
+    if(html){
+      var parser = new DOMParser();
+      var doc = parser.parseFromString(html, "text/html");
+      var title = doc.querySelector('title').text;
+      issueDesc.value = title.substring(0, title.lastIndexOf(" - ") + 1).trim();
+      //seleciona e copia para o clipboard
+      issueDesc.select();
+      document.execCommand("copy");
+      alert.innerHTML = "Copiado!";
+    }
+  })
+  .catch(function(err) {  
+    alert.innerHTML = "Falha ao obter descrição :(";
+  });
+}
 
 var isTrello = function(url) {
   return url.toString().includes("trello");
