@@ -24,11 +24,7 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     return;
   }
 
-  if(url.searchParams.has("selectedIssue")){
-    issue = url.searchParams.get("selectedIssue");
-  }else{
-    issue = url.pathname.replace("\/browse\/", "");
-  }
+  issue = getJiraIssue(url);
 
   fetch(url.origin + '/browse/' + issue)
     .then(function(response) {
@@ -55,6 +51,14 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       alert.innerHTML = "Falha ao obter descrição :(";
     });
 });
+
+var getJiraIssue = function(url) {
+  if(url.searchParams.has("selectedIssue")){
+    return url.searchParams.get("selectedIssue");
+  }else{
+    return url.pathname.replace("\/browse\/", "");
+  }
+}  
 
 var isTrello = function(url) {
   return url.toString().includes("trello");
