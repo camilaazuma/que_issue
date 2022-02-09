@@ -23,7 +23,7 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     return;
   }
 
-  setJiraIssueCodeFromHTML(url);
+  setJiraIssueCodeFromAPI(url);
 });
 
 var getJiraIssue = function(url) {
@@ -33,6 +33,43 @@ var getJiraIssue = function(url) {
     return url.pathname.replace("\/browse\/", "");
   }
 }  
+
+var setJiraIssueCodeFromAPI = function(url) {
+  var issue = getJiraIssue(url);
+
+  fetch(url.origin + '/rest/graphql/1/',{
+    "headers": {
+      "accept": "application/json,text/javascript,*/*",
+      "content-type": "application/json",
+    },
+    "body": "{\"query\":\"query {\\n        issue(issueIdOrKey: \\\"" + issue + "\\\", latestVersion: true, screen: \\\"view\\\") {\\n            fields { content }\\n        }\\n    }\"}",
+  "method": "POST",
+  })
+  .then(function(response) {
+    if(response.status == 200){
+      return response.json();
+    }else{
+      alert.innerHTML = "Falha ao obter descrição :(";
+      return null;
+    }
+  })
+  .then(function(json) {
+    if(json){
+      var summary = json.data.issue.fields.find(o => o.key='summary').content;
+      var desc = '[' + issue + '] ' + summary;
+      issueDesc.value = desc.trim();
+      issueDesc.select();
+      //seleciona e copia para o clipboard
+      issueDesc.select();
+      document.execCommand("copy");
+      alert.innerHTML = "Copiado!";
+    }
+  })
+  .catch(function(err) {  
+    console.error(err);
+    alert.innerHTML = "Falha ao obter descrição :(";
+  });
+}
 
 //Old way
 var setJiraIssueCodeFromHTML = function(url) {  
@@ -60,6 +97,7 @@ var setJiraIssueCodeFromHTML = function(url) {
     }
   })
   .catch(function(err) {  
+    console.error(err);
     alert.innerHTML = "Falha ao obter descrição :(";
   });
 }
