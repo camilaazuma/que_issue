@@ -17,44 +17,90 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
   var activeTab = tabs[0];
   var url = new URL(activeTab.url);
 
-  var issue = "";
   
   if(isTrello(url)) {
     setTrelloIssueCode(url);
     return;
   }
 
+  setJiraIssueCodeFromAPI(url);
+});
+
+var getJiraIssue = function(url) {
   if(url.searchParams.has("selectedIssue")){
-    issue = url.searchParams.get("selectedIssue");
+    return url.searchParams.get("selectedIssue");
   }else{
-    issue = url.pathname.replace("\/browse\/", "");
+    return url.pathname.replace("\/browse\/", "");
   }
+}  
+
+var setJiraIssueCodeFromAPI = function(url) {
+  var issue = getJiraIssue(url);
+
+  fetch(url.origin + '/rest/graphql/1/',{
+    "headers": {
+      "accept": "application/json,text/javascript,*/*",
+      "content-type": "application/json",
+    },
+    "body": "{\"query\":\"query {\\n        issue(issueIdOrKey: \\\"" + issue + "\\\", latestVersion: true, screen: \\\"view\\\") {\\n            id\\n            viewScreenId \\n            fields {\\n                key\\n                title\\n                editable\\n                required\\n                autoCompleteUrl\\n                allowedValues\\n                content\\n                renderedContent\\n                schema {\\n                    custom\\n                    system\\n                    configuration {\\n        key\\n        value\\n    }\\n    \\n                    items\\n                    type\\n                    renderer\\n                }\\n                configuration\\n            }\\n            expandAssigneeInSubtasks\\n            expandAssigneeInIssuelinks\\n            expandTimeTrackingInSubtasks\\n            systemFields {\\n                descriptionAdf {\\n                    value\\n                }\\n                environmentAdf {\\n        value\\n    }\\n            }\\n            customFields {\\n                textareaAdf {\\n                    key\\n                    value\\n                }\\n            }            \\n            tabs {\\n        id\\n        name\\n        items {\\n            id\\n            type\\n        }\\n    }\\n            \\n    isHybridAgilityProject\\n    \\n            \\n    agile {\\n        epic {\\n          key\\n        },\\n    }\\n        }\\n        \\n        project(projectIdOrKey: \\\"SLDI\\\") {\\n            id\\n            name\\n            key\\n            projectTypeKey\\n            simplified\\n            avatarUrls {\\n                key\\n                value\\n            }\\n            archived\\n            deleted\\n        }\\n    }\"}",
+    "method": "POST",
+  })
+  .then(function(response) {
+    if(response.status == 200){
+      return response.json();
+    }else{
+      alert.innerHTML = "Falha ao obter descrição :(";
+      return null;
+    }
+  })
+  .then(function(json) {
+    if(json){
+      var summary = json.data.issue.fields.find(o => o.key==='summary').content;
+      var desc = '[' + issue + '] ' + summary;
+      issueDesc.value = desc.trim();
+      issueDesc.select();
+      //seleciona e copia para o clipboard
+      issueDesc.select();
+      document.execCommand("copy");
+      alert.innerHTML = "Copiado!";
+    }
+  })
+  .catch(function(err) {  
+    console.error(err);
+    alert.innerHTML = "Falha ao obter descrição :(";
+  });
+}
+
+//Old way
+var setJiraIssueCodeFromHTML = function(url) {  
+  var issue = getJiraIssue(url);
 
   fetch(url.origin + '/browse/' + issue)
-    .then(function(response) {
-      if(response.status == 200){
-        return response.text();
-      }else{
-        alert.innerHTML = "Falha ao obter descrição :(";
-        return null;
-      }
-    })
-    .then(function(html) {
-      if(html){
-        var parser = new DOMParser();
-        var doc = parser.parseFromString(html, "text/html");
-        var title = doc.querySelector('title').text;
-        issueDesc.value = title.substring(0, title.lastIndexOf(" - ") + 1).trim();
-        //seleciona e copia para o clipboard
-        issueDesc.select();
-        document.execCommand("copy");
-        alert.innerHTML = "Copiado!";
-      }
-    })
-    .catch(function(err) {  
+  .then(function(response) {
+    if(response.status == 200){
+      return response.text();
+    }else{
       alert.innerHTML = "Falha ao obter descrição :(";
-    });
-});
+      return null;
+    }
+  })
+  .then(function(html) {
+    if(html){
+      var parser = new DOMParser();
+      var doc = parser.parseFromString(html, "text/html");
+      var title = doc.querySelector('title').text;
+      issueDesc.value = title.substring(0, title.lastIndexOf(" - ") + 1).trim();
+      //seleciona e copia para o clipboard
+      issueDesc.select();
+      document.execCommand("copy");
+      alert.innerHTML = "Copiado!";
+    }
+  })
+  .catch(function(err) {  
+    console.error(err);
+    alert.innerHTML = "Falha ao obter descrição :(";
+  });
+}
 
 var isTrello = function(url) {
   return url.toString().includes("trello");
