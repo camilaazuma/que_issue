@@ -27,11 +27,17 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 });
 
 var getJiraIssue = function(url) {
-  if(url.searchParams.has("selectedIssue")){
-    return url.searchParams.get("selectedIssue");
-  }else{
-    return url.pathname.replace("\/browse\/", "");
+  var searchParams = {}
+  if(Object.keys(url.searchParams).length){
+    searchParams = url.searchParams
+  } else {
+    var search = url.search.substring(1);
+    if(search){
+      searchParams = JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}')
+    }
   }
+  
+  return searchParams.selectedIssue ? searchParams.selectedIssue : url.pathname.replace("\/browse\/", "")
 }  
 
 var setJiraIssueCodeFromAPI = function(url) {
