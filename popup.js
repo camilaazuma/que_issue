@@ -48,7 +48,7 @@ var setJiraIssueCodeFromAPI = function(url) {
       "accept": "application/json,text/javascript,*/*",
       "content-type": "application/json",
     },
-    "body": "{\"query\":\"query fieldDescriptionQuery {\\n    issue(issueIdOrKey: \\\"" + issue + "\\\", latestVersion: true, screen: \\\"view\\\") {\\n        fields {\\n            key\\n            description\\n        }\\n    }\\n    }\"}",
+    "body": "{\"query\":\"query fieldDescriptionQuery {\\n    issue(issueIdOrKey: \\\"" + issue + "\\\", latestVersion: true, screen: \\\"view\\\") {\\n        fields {\\n            key\\n            content\\n            description\\n        }\\n    }\\n    }\"}",
     "method": "POST",
   })
   .then(function(response) {
