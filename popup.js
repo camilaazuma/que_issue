@@ -27,11 +27,17 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 });
 
 var getJiraIssue = function(url) {
-  if(url.searchParams.has("selectedIssue")){
-    return url.searchParams.get("selectedIssue");
-  }else{
-    return url.pathname.replace("\/browse\/", "");
+  var searchParams = {}
+  if(Object.keys(url.searchParams).length){
+    searchParams = url.searchParams
+  } else {
+    var search = url.search.substring(1);
+    if(search){
+      searchParams = JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}')
+    }
   }
+  
+  return searchParams.selectedIssue ? searchParams.selectedIssue : url.pathname.replace("\/browse\/", "")
 }  
 
 var setJiraIssueCodeFromAPI = function(url) {
@@ -42,7 +48,7 @@ var setJiraIssueCodeFromAPI = function(url) {
       "accept": "application/json,text/javascript,*/*",
       "content-type": "application/json",
     },
-    "body": "{\"query\":\"query {\\n        issue(issueIdOrKey: \\\"" + issue + "\\\", latestVersion: true, screen: \\\"view\\\") {\\n            id\\n            viewScreenId \\n            fields {\\n                key\\n                title\\n                editable\\n                required\\n                autoCompleteUrl\\n                allowedValues\\n                content\\n                renderedContent\\n                schema {\\n                    custom\\n                    system\\n                    configuration {\\n        key\\n        value\\n    }\\n    \\n                    items\\n                    type\\n                    renderer\\n                }\\n                configuration\\n            }\\n            expandAssigneeInSubtasks\\n            expandAssigneeInIssuelinks\\n            expandTimeTrackingInSubtasks\\n            systemFields {\\n                descriptionAdf {\\n                    value\\n                }\\n                environmentAdf {\\n        value\\n    }\\n            }\\n            customFields {\\n                textareaAdf {\\n                    key\\n                    value\\n                }\\n            }            \\n            tabs {\\n        id\\n        name\\n        items {\\n            id\\n            type\\n        }\\n    }\\n            \\n    isHybridAgilityProject\\n    \\n            \\n    agile {\\n        epic {\\n          key\\n        },\\n    }\\n        }\\n        \\n        project(projectIdOrKey: \\\"SLDI\\\") {\\n            id\\n            name\\n            key\\n            projectTypeKey\\n            simplified\\n            avatarUrls {\\n                key\\n                value\\n            }\\n            archived\\n            deleted\\n        }\\n    }\"}",
+    "body": "{\"query\":\"query issueDataQuery {\\n        issue(issueIdOrKey: \\\"" + issue + "\\\", latestVersion: true, screen: \\\"view\\\") {\\n            id\\n            viewScreenId\\n            fields {\\n                key\\n                title\\n                editable\\n                required\\n                autoCompleteUrl\\n                allowedValues\\n                content\\n                renderedContent\\n                schema {\\n                    custom\\n                    system\\n                    configuration {\\n        key\\n        value\\n    }\\n    \\n                    items\\n                    type\\n                    renderer\\n                }\\n                configuration\\n            }\\n            expandAssigneeInSubtasks\\n            expandAssigneeInIssuelinks\\n            expandTimeTrackingInSubtasks\\n            systemFields {\\n                descriptionAdf {\\n                    value\\n                }\\n                environmentAdf {\\n        value\\n    }\\n            }\\n            customFields {\\n                textareaAdf {\\n                    key\\n                    value\\n                }\\n            }\\n            tabs {\\n        id\\n        name\\n        items {\\n            id\\n            type\\n        }\\n    }\\n            \\n    isHybridAgilityProject\\n    \\n            \\n    agile {\\n        epic {\\n          key\\n        },\\n    }\\n        }\\n        \\n        project(projectIdOrKey: \\\"ININ\\\") {\\n            id\\n            name\\n            key\\n            projectTypeKey\\n            simplified\\n            avatarUrls {\\n                key\\n                value\\n            }\\n            archived\\n            deleted\\n        }\\n    }\"}",
     "method": "POST",
   })
   .then(function(response) {
