@@ -177,7 +177,10 @@ var deleteHost = function () {
 
 //Save and reapply hosts.
 var saveHosts = function () {
-  saveHostsAndReapply(savedHosts);
+  chrome.runtime.sendMessage({
+    action: "save_and_apply_hosts",
+    hosts: savedHosts,
+  });
 };
 
 //The glue to hold it all together.

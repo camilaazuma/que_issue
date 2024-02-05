@@ -7,19 +7,19 @@ var saveHostsAndReapply = function (hosts) {
 };
 
 var reapplyHosts = function (hosts) {
-  chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
-    for (var i = 0; i < hosts.length; i++) {
-      chrome.declarativeContent.onPageChanged.addRules([
-        {
-          conditions: [
-            new chrome.declarativeContent.PageStateMatcher({
-              pageUrl: { hostEquals: hosts[i] },
-            }),
-          ],
-          actions: [new chrome.declarativeContent.ShowPageAction()],
-        },
-      ]);
-    }
+  chrome.action.disable();
+  chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
+    let rules = hosts.map((host) => {
+      return {
+        conditions: [
+          new chrome.declarativeContent.PageStateMatcher({
+            pageUrl: { urlContains: host },
+          }),
+        ],
+        actions: [new chrome.declarativeContent.ShowAction()],
+      };
+    });
+    chrome.declarativeContent.onPageChanged.addRules(rules);
   });
 };
 
@@ -31,7 +31,6 @@ var getAndApplyHosts = function () {
     } else {
       hosts = ["inspira.atlassian.net"];
     }
-    console.log(hosts);
     reapplyHosts(hosts);
   });
 };
@@ -46,15 +45,8 @@ chrome.runtime.onStartup.addListener(function () {
   console.log("que_issue - onStartup");
 });
 
-// self.addEventListener("message", function (event) {
-//   if (event.data && event.data.type === "SAVE_HOSTS") {
-//     saveHostsAndReapply(event.data.hosts);
-//   }
-// });
-
-chrome.runtime.onMessage.addListener(function (request) {
-  if (request.action == "SAVE_HOSTS") {
-    console.log(request);
-    // saveHostsAndReapply(event.data.hosts);
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "save_and_apply_hosts") {
+    saveHostsAndReapply(request.hosts);
   }
 });
