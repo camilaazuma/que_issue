@@ -1,70 +1,78 @@
 <html>
-  <head>
-    <title>Que issue? | Configurações</title>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8">
-  </head>
-  <body class="container">
-    <div></div>
+
+<head>
+  <title>Que issue? | Configurações</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8">
+</head>
+
+<body class="container">
+  <div></div>
+  <div>
+    <p>
+      <label for="new-host" class="title-label">Adicione um novo domínio para utilizar a extensão</label>
+    <div class="flex">
+      <input id="new-host" type="text">
+      <button id="add">Add</button>
+    </div>
+    <br />
+    <span id="input-error" class="error">* Verifique o preenchimento do campo</span>
+    <span id="input-error-duplicate" class="error">* Este domínio já está salvo nas suas configurações</span>
+    <span id="input-wrong-trello-format" class="error">* Domínio Trello está no formato errado, incluir apenas
+      "trello.com" (consulte as regras de inclusão).</span>
+    </p>
+
+    <div id="trello-issue-config" class="hide">
+      <label for="trello-issue" class="rules">Configure o código da issue para boards Trello. Ex: Para obter [ABC-1],
+        insira "ABC"</label>
+      <div class="flex">
+        <input id="trello-issue" type="text">
+        <button id="trello-issue-save">Salvar</button>
+      </div>
+    </div>
+
     <div>
-      <p>
-        <label for="new-host" class="title-label">Adicione um novo domínio para utilizar a extensão</label>
-        <div class="flex">
-          <input id="new-host" type="text">
-          <button id="add">Add</button>
-        </div>
-        <br />
-        <span id="input-error" class="error">* Verifique o preenchimento do campo</span>
-        <span id="input-error-duplicate" class="error">* Este domínio já está salvo nas suas configurações</span>
-        <span id="input-wrong-trello-format" class="error">* Domínio Trello está no formato errado, incluir apenas "trello.com" (consulte as regras de inclusão).</span>
-      </p>
-
-      <div id="trello-issue-config" class="hide">
-        <label for="trello-issue" class="rules">Configure o código da issue para boards Trello. Ex: Para obter [ABC-1], insira "ABC"</label>
-        <div class="flex">
-          <input id="trello-issue" type="text">
-          <button id="trello-issue-save">Salvar</button>
-        </div>
-      </div>
-
-      <div>
-        <button id="see-ruleset">Ver regras de inclusão</button>
-      </div>
-
-      <h3>Domínios</h3>
-      <ul id="host-list">
-      </ul>
-
-      <div id="trello-show-config" class="hide">
-        <span class="title-span">Código configurado (Trello):</span>
-        <span id="trello-current-config"></span>
-        <button id="trello-delete">Apagar</button>
-      </div>
-
-      <button id="save">Save</button>
-
-    </div>
-    <div id="ruleset" class="hidden">
-      <p>
-        <label class="title-label">Regras para inclusão de novos domínios</label>
-        <div class="type-rules">
-          <div class="subtitle">Jira</div>
-          <span class="rules">Para configurar um domínio Atlassian (Jira), insira <i>apenas</i> o valor do host utilizado.</span>
-          <span class="rules"><strong>Ex:</strong> inspira.atlassian.net</span>
-        </div>
-
-        <div class="type-rules">
-          <div class="subtitle">Trello</div>
-          <span class="rules">Atualmente, a configuração de boards Trello é feita apenas de forma genérica, sem diferenciar entre boards. Para configurar o domínio Trello, basta inserir <strong>trello.com</strong>.</span>
-          <span class="rules">Como boards Trello não possuem código de issue, este padrão será configurado manualmente, logo após a inclusão do domínio.</span>
-          <span class="rules"><strong>Ex:</strong> Para obter a descrição de um card como "[RDG-23] Teste", será necessário configurar o código de issue como RDG.</span>
-        </div>
-
-      </p>
+      <button id="see-ruleset">Ver regras de inclusão</button>
     </div>
 
-    <script src="hosts.js"></script>
-    <script src="options.js"></script>
+    <h3>Domínios</h3>
+    <ul id="host-list">
+    </ul>
 
-  </body>
+    <div id="trello-show-config" class="hide">
+      <span class="title-span">Código configurado (Trello):</span>
+      <span id="trello-current-config"></span>
+      <button id="trello-delete">Apagar</button>
+    </div>
+
+    <button id="save">Save</button>
+
+  </div>
+  <div id="ruleset" class="hidden">
+    <p>
+      <label class="title-label">Regras para inclusão de novos domínios</label>
+    <div class="type-rules">
+      <div class="subtitle">Jira</div>
+      <span class="rules">Para configurar um domínio Atlassian (Jira), insira <i>apenas</i> o valor do host
+        utilizado.</span>
+      <span class="rules"><strong>Ex:</strong> inspira.atlassian.net</span>
+    </div>
+
+    <div class="type-rules">
+      <div class="subtitle">Trello</div>
+      <span class="rules">Atualmente, a configuração de boards Trello é feita apenas de forma genérica, sem diferenciar
+        entre boards. Para configurar o domínio Trello, basta inserir <strong>trello.com</strong>.</span>
+      <span class="rules">Como boards Trello não possuem código de issue, este padrão será configurado manualmente, logo
+        após a inclusão do domínio.</span>
+      <span class="rules"><strong>Ex:</strong> Para obter a descrição de um card como "[RDG-23] Teste", será necessário
+        configurar o código de issue como RDG.</span>
+    </div>
+
+    </p>
+  </div>
+
+  <script src="options.js"></script>
+
+</body>
+
 </html>
